@@ -1,0 +1,88 @@
+﻿@model MvcCalisan.Models.CalisanViewModel
+ 
+@{
+    ViewBag.Title = "CalisanEkle";
+}
+    @if((string) Session["YETKI"] == "1") { 
+    <div class="container" style="width:40%;margin-top:2%">
+
+    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Calisan Ekle</a>
+
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">Calisan Ekle</h3>
+
+                </div>
+                <div class="modal-body">
+
+                    <form id="myForm">
+
+                        @Html.DropDownListFor(model => model.departmanID, ViewBag.DepartmentList as SelectList, "Departman Seçiniz", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.departmanID)
+                        @Html.DropDownListFor(model => model.pozisyonID, ViewBag.PozisyonList as SelectList, "Pozisyon Seçiniz", new { @class = "form-control" })
+                        
+                        @Html.TextBoxFor(model => model.calisanIsim, new { @class = "form-control", @placeholder = "calisanIsim" })
+
+                        @Html.TextBoxFor(model => model.calisanAdres, new { @class = "form-control", @placeholder = "calisanAdres" })
+
+                        @Html.TextBoxFor(model => model.calisanYas, new { @class = "form-control", @placeholder = "Yas" })
+
+                        @Html.TextBoxFor(model => model.calisanMaas, new { @class = "form-control", @placeholder = "calisanMaas" })
+
+                        @Html.TextBoxFor(model => model.calisanTelefon, new { @class = "form-control", @placeholder = "calisanTelefon" })
+
+                        @Html.TextBoxFor(model => model.calisanEmail, new { @class = "form-control", @placeholder = "calisanEmail", })
+
+                        @Html.TextBoxFor(model => model.calisanKod, new { @class = "form-control", @placeholder = "calisanKod" })
+                    
+                        @Html.TextBoxFor(model => model.calisanYetkiID, new { @class = "form-control", @placeholder = "1-2-3" })
+                    </form>
+
+                    <div style="text-align:center;display:none" id="loaderDiv">
+                        <img src="~/Content/InternetSlowdown_Day.gif" width="150" /> @* //put any image in content folder*@
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    <input type="reset" value="Submit" class="btn btn-success" id="btnSubmit" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+    }
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#btnSubmit").click(function () {
+            $("#loaderDiv").show();
+            var myformdata = $("#myForm").serialize();
+            $.ajax({
+                type: "POST",
+                url:"/Calisan/CalisanEkle",
+                data: myformdata,
+                success: function () {
+                    $("#loaderDiv").hide();
+                    $("#myModal").modal("hide");
+                }
+            })
+        })
+    })
+
+
+</script>
+
+

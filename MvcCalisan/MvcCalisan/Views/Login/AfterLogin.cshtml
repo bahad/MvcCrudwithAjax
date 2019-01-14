@@ -1,0 +1,11 @@
+﻿@model MvcCalisan.Models.Calisan
+
+@{
+    ViewBag.Title = "AfterLogin";
+}
+
+@if(Session["UserID"] != null)
+{
+    <div>Username: <a href="#" >@Session["UserCode"]</a></div>
+}
+

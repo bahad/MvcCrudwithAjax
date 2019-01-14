@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MvcExampleModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Calisan">
+    <Key>
+      <PropertyRef Name="calisanID" />
+    </Key>
+    <Property Name="calisanID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="calisanIsim" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="calisanAdres" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="calisanYas" Type="Int32" />
+    <Property Name="calisanMaas" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="calisanTelefon" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="calisanEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="departmanID" Type="Int32" Nullable="false" />
+    <Property Name="pozisyonID" Type="Int32" Nullable="false" />
+    <Property Name="calisanKod" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="calisanYetkiID" Type="Int32" />
+    <NavigationProperty Name="Departman" Relationship="Self.FK_Calisan_Departman" FromRole="Calisan" ToRole="Departman" />
+    <NavigationProperty Name="Pozisyon" Relationship="Self.FK_Calisan_Pozisyon" FromRole="Calisan" ToRole="Pozisyon" />
+  </EntityType>
+  <EntityType Name="Departman">
+    <Key>
+      <PropertyRef Name="departmanID" />
+    </Key>
+    <Property Name="departmanID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="departmanAd" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Calisans" Relationship="Self.FK_Calisan_Departman" FromRole="Departman" ToRole="Calisan" />
+  </EntityType>
+  <EntityType Name="Pozisyon">
+    <Key>
+      <PropertyRef Name="pozisyonID" />
+    </Key>
+    <Property Name="pozisyonID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="pozisyonAd" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Calisans" Relationship="Self.FK_Calisan_Pozisyon" FromRole="Pozisyon" ToRole="Calisan" />
+  </EntityType>
+  <Association Name="FK_Calisan_Departman">
+    <End Role="Departman" Type="Self.Departman" Multiplicity="1" />
+    <End Role="Calisan" Type="Self.Calisan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Departman">
+        <PropertyRef Name="departmanID" />
+      </Principal>
+      <Dependent Role="Calisan">
+        <PropertyRef Name="departmanID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Calisan_Pozisyon">
+    <End Role="Pozisyon" Type="Self.Pozisyon" Multiplicity="1" />
+    <End Role="Calisan" Type="Self.Calisan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pozisyon">
+        <PropertyRef Name="pozisyonID" />
+      </Principal>
+      <Dependent Role="Calisan">
+        <PropertyRef Name="pozisyonID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="MvcExampleEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Calisans" EntityType="Self.Calisan" />
+    <EntitySet Name="Departmen" EntityType="Self.Departman" />
+    <EntitySet Name="Pozisyons" EntityType="Self.Pozisyon" />
+    <AssociationSet Name="FK_Calisan_Departman" Association="Self.FK_Calisan_Departman">
+      <End Role="Departman" EntitySet="Departmen" />
+      <End Role="Calisan" EntitySet="Calisans" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Calisan_Pozisyon" Association="Self.FK_Calisan_Pozisyon">
+      <End Role="Pozisyon" EntitySet="Pozisyons" />
+      <End Role="Calisan" EntitySet="Calisans" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

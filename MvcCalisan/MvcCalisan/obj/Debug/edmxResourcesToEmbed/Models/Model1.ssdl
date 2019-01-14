@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MvcExampleModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Calisan">
+    <Key>
+      <PropertyRef Name="calisanID" />
+    </Key>
+    <Property Name="calisanID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="calisanIsim" Type="nvarchar" MaxLength="50" />
+    <Property Name="calisanAdres" Type="nvarchar(max)" />
+    <Property Name="calisanYas" Type="int" />
+    <Property Name="calisanMaas" Type="money" />
+    <Property Name="calisanTelefon" Type="nvarchar" MaxLength="50" />
+    <Property Name="calisanEmail" Type="nvarchar" MaxLength="50" />
+    <Property Name="departmanID" Type="int" Nullable="false" />
+    <Property Name="pozisyonID" Type="int" Nullable="false" />
+    <Property Name="calisanKod" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="calisanYetkiID" Type="int" />
+  </EntityType>
+  <EntityType Name="Departman">
+    <Key>
+      <PropertyRef Name="departmanID" />
+    </Key>
+    <Property Name="departmanID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="departmanAd" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Pozisyon">
+    <Key>
+      <PropertyRef Name="pozisyonID" />
+    </Key>
+    <Property Name="pozisyonID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="pozisyonAd" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <Association Name="FK_Calisan_Departman">
+    <End Role="Departman" Type="Self.Departman" Multiplicity="1" />
+    <End Role="Calisan" Type="Self.Calisan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Departman">
+        <PropertyRef Name="departmanID" />
+      </Principal>
+      <Dependent Role="Calisan">
+        <PropertyRef Name="departmanID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Calisan_Pozisyon">
+    <End Role="Pozisyon" Type="Self.Pozisyon" Multiplicity="1" />
+    <End Role="Calisan" Type="Self.Calisan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pozisyon">
+        <PropertyRef Name="pozisyonID" />
+      </Principal>
+      <Dependent Role="Calisan">
+        <PropertyRef Name="pozisyonID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="MvcExampleModelStoreContainer">
+    <EntitySet Name="Calisan" EntityType="Self.Calisan" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Departman" EntityType="Self.Departman" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Pozisyon" EntityType="Self.Pozisyon" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Calisan_Departman" Association="Self.FK_Calisan_Departman">
+      <End Role="Departman" EntitySet="Departman" />
+      <End Role="Calisan" EntitySet="Calisan" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Calisan_Pozisyon" Association="Self.FK_Calisan_Pozisyon">
+      <End Role="Pozisyon" EntitySet="Pozisyon" />
+      <End Role="Calisan" EntitySet="Calisan" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

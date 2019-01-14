@@ -1,0 +1,225 @@
+﻿@model MvcCalisan.Models.CalisanViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+<br />   <br /> <br /> 
+    <h3 class="container"style="text-align:center">----Calisanlar Tablosu-----</h3>
+<br /> 
+    @if (Session["UserID"] != null) {
+        //DELETE MODAL
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">Delete Employee</h3>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure ? You want to delete this. </h4>
+
+                <div style="text-align:center;display:none" id="loaderDiv">
+                    <img src="~/Content/InternetSlowdown_Day.gif" width="150" />
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <a href="#" class="btn btn-success" onclick="DeleteEmployee()">Confirm</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+    }
+<input type="hidden" id="hiddenEmployeeId" />
+<br /> 
+<!--TABLO GOSTER-->
+<div class="container">
+        <table class="table table-bordered table-responsive">
+            <tr>
+                <th>ID</th>
+                <th>Isim</th>
+                <th>Kod</th>
+                <th>Departman</th>
+                <th>Pozisyon</th>
+                <th>Yetki</th>
+                <th>Guncelle</th>
+                <th>Sil</th>
+            </tr>
+            <tbody id="DataSearching">
+                @if (ViewBag.CalisanList != null)
+                {
+
+                    foreach (var item in ViewBag.CalisanList)
+                    {
+                        <tr id="row_@item.calisanID">
+                            <td>@item.calisanID</td>
+                            <td><a href="#" data-toggle="popover" data-trigger="hover" id="@item.calisanID">@item.calisanIsim</a></td>
+                            <td>@item.calisanKod</td>
+                            <td>@item.DepartmentName</td>
+                            <td>@item.PozisyonName</td>
+                            <td>@item.calisanYetkiID</td>
+                            <td><a href="#" class="btn btn-warning" onclick="ConfirmUpdate(@item.calisanID)"><i class="glyphicon glyphicon-edit"></i> </a> </td>
+                            <td><a href="#" class="btn btn-danger" onclick="ConfirmDelete(@item.calisanID)"><i class="glyphicon glyphicon-trash"></i> </a> </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+
+        </table>
+    </div>
+<select id="SearchBy">
+    <option value="name">Isim</option>
+    <option value="ID">ID</option>
+</select> </br>
+@Html.TextBox("Search")<input type="submit" id="SearchBtn" value="Search" /></br> 
+        
+<!--EDIT MODAL-->
+<div class="modal fade" id="myModal2">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">Edit Calisan</h3>
+            </div>
+            <div class="modal-body" id="myModalBody2">
+                <form id="form2">
+                    <fieldset id="submitForm2">
+                        @Html.HiddenFor(x=>x.calisanID,new { @id = "calisanID" })
+                        
+                        <div class="form-group">
+                            @Html.TextBoxFor(x=>x.calisanIsim, new { @id="calisanIsim", @class="form-control", @placeholder = "Isim"})
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(x => x.calisanKod, new { @id = "calisanKod", @class = "form-control", @placeholder = "Kodu" })
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(x => x.calisanAdres, new { @id = "calisanAdres", @class = "form-control", @placeholder = "Adresi" })
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(x => x.calisanEmail, new { @id = "calisanEmail", @class = "form-control", @placeholder = "Emaili" })
+                        </div>
+
+                        
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+ 
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<!--Show Info AJAX-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover({
+            title: setData,
+            html: true,
+            placement: 'right',
+        });
+        function setData(id) {
+            var set_data = '';
+            var element = $(this);
+            var id = element.attr("id");
+            $.ajax({
+                url: '/Calisan/Info?id=' + id,
+                method: 'post',
+                async: false,
+                data: { id: id },
+                success: function (data) {
+                    set_data = data;
+                }
+
+            }); return set_data;
+        }
+    });
+</script>
+<!--DELETE AJAX-->
+<script type="text/javascript">
+
+    var ConfirmDelete = function (calisanID) {
+
+        $("#hiddenEmployeeId").val(calisanID);
+        $("#myModal").modal('show');
+
+    }
+
+    var DeleteEmployee = function () {
+
+        $("#loaderDiv").show();
+
+        var empId = $("#hiddenEmployeeId").val();
+        var url = "/Calisan/DeleteCalisan?calisanID"
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { calisanID: empId },
+            success: function (result) {
+                $("#loaderDiv").hide();
+                $("#myModal").modal("hide");
+                $("#row_" + empId).remove();
+
+            }
+
+        })
+
+    }
+</script>
+<!--SEARCHING AJAX-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Search").keyup(function () {
+            var SearchBy = $("#SearchBy").val();
+            var SearchValue = $("#Search").val();
+            var SetData = $("#DataSearching");
+            SetData.html("");
+            $.ajax({
+                type: "post",
+                url: "/Calisan/GetSearchingData?SearchBy=" + SearchBy + "&SearchValue=" + SearchValue,
+                contentType: "html",
+                success: function (result) {
+                    if (result.Length == 0) {
+                        SetData.append('<tr style="color:red"><td colspan="3">Eslesen Veri Yok</td></tr>')
+                    }
+                    else {
+                        $.each(result, function (index, value) {
+                            var Data = "<tr>" +
+                                 "<td>" + value.calisanID + "</td>" +                       
+                                 "<td>" + value.calisanIsim + "</td>" +
+                                 "<td>" + value.calisanKod + "</td>" +
+                                 "<td>" + value.DepartmentName + "</td>" +
+                                 "<td>" + value.PozisyonName + "</td>" +
+                                 "</tr>"
+                            SetData.append(Data);
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+<!--EDIT CALISAN-->
+<script type="text/javascript">
+    function ConfirmUpdate(calisanID) {
+        var url = "/Calisan/GetCalisanById?calisanID=" + calisanID;
+        $("#myModal2").modal('show');
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (data) {
+                var obj = JSON.Parse(data);
+                $("#calisanID").val(obj.calisanID);
+                $("#calisanIsim").val(obj.calisanIsim);
+                $("#calisanKod").val(obj.calisanKod);
+                $("#calisanAdres").val(obj.calisanAdres);
+                $("#calisanEmail").val(obj.calisanEmail);
+            }
+        })
+    }
+</script>

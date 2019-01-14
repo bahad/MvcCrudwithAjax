@@ -1,0 +1,17 @@
+﻿@model IEnumerable<MvcCalisan.Models.Calisan>
+@{
+    ViewBag.Title = "Info";
+}
+<br />
+<div class="container">
+    <h4 style="text-align:center; border-bottom:1px solid #808080">Calisan Bilgileri</h4>
+    @foreach(var item in Model)
+    {
+        <p><label>Email: </label>@item.calisanEmail</p>
+        <p><label>Adres: </label>@item.calisanAdres</p>
+        <p><label>Yaş: </label>@item.calisanYas</p>
+        <p><label>Maas: </label>@item.calisanMaas</p>
+        <p><label>Telefon: </label>@item.calisanTelefon</p>
+    } 
+</div>
+
